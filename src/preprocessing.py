@@ -42,15 +42,16 @@ import os
 
 def clean_data(df):
     """Clean and preprocess financial data."""
-    # Ensure proper data types
     df = df.astype({'Open': float, 'High': float, 'Low': float, 'Close': float, 'Volume': int})
-    
-    # Handle missing values (interpolate)
     df = df.interpolate(method='linear')
-    
-    # Add daily returns
     df['Daily_Return'] = df['Close'].pct_change()
-    
+    if df.isna().any().any():
+        print("Warning: NaN values found after interpolation. Applying robust fill...")
+        df = df.ffill().bfill()  # Updated to avoid deprecation
+        if df.isna().any().any():
+            print("Warning: NaN still present. Using last valid value...")
+            df = df.fillna(df.mean())
+    print(f"Final NaN count in {df.columns[0]}: {df.isna().sum().sum()}")
     return df
 
 def load_and_clean(tickers, input_dir="data/raw", output_dir="data/processed"):
