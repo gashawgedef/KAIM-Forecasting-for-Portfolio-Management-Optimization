@@ -64,7 +64,7 @@ def plot_forecast(df, forecast_df, ticker):
     plt.close()
 
 if __name__ == "__main__":
-    df = pd.read_csv("data/processed/TSLA_processed.csv", index_col='Date', parse_dates=True)
+    df = pd.read_csv("../data/processed/TSLA_processed.csv", index_col='Date', parse_dates=True)
     model, _, _, _ = train_arima(df)  # From models.py
     forecast_df = forecast_future(model, df)
     plot_forecast(df, forecast_df, "TSLA")
